@@ -5,12 +5,13 @@ var nanoid_1 = require("nanoid");
 var redData_1 = require("./redData");
 var progLang;
 (function (progLang) {
-    progLang["NODEJS"] = "NODEJS";
-    progLang["BROWSERJS"] = "BROWSERJS";
-    progLang["PYTHON"] = "PYTHON";
-    progLang["CPP"] = "CPP";
-    progLang["JAVA"] = "JAVA";
-    progLang["KOTLIN"] = "KOTLIN";
+    progLang["nodejs"] = "nodejs";
+    progLang["js"] = "js";
+    progLang["python"] = "python";
+    progLang["cpp"] = "cpp";
+    progLang["java"] = "java";
+    progLang["kotlin"] = "kotlin";
+    progLang["mobile"] = "mobile";
 })(progLang = exports.progLang || (exports.progLang = {}));
 var serviceStartType;
 (function (serviceStartType) {
@@ -21,14 +22,16 @@ var sourceInfo = /** @class */ (function () {
     function sourceInfo() {
         this.srvID = nanoid_1.nanoid();
         this.instID = nanoid_1.nanoid();
-        this.proglang = progLang.BROWSERJS;
+        this.proglang = progLang.js;
+        this.sysDef = false;
+        this.iconName = "";
         this.iDf = new redData_1.dataBundle;
         this.oDf = new redData_1.dataBundle;
         this.name = "";
         this.dispName = "";
         this.desc = "";
-        this.tags = [];
         this.startType = serviceStartType.manual;
+        this.isExtern = false;
         this.iDf.ioType = redData_1.ioParamsType.userDefined;
     }
     sourceInfo.getRedOutputData = function (sessionID, data) {

@@ -56,14 +56,7 @@ var interInst = setInterval(function () {
     // send data to nikkibuild
     srvInst.sendData({ count: count });
     console.info("sending data ", count);
-    if (count == 20) {
-        console.info("closing connection.");
-        srvInst.stop();
-        if (interInst) {
-            clearInterval(interInst);
-        }
-    }
-}, 6000);
+}, 3000);
 //  sends messages every 6 seconds . after sending 20 service will stop..
 // #  BE CARE FULL , while changin these paramters,
 // #  your subscriptions will have MAX messages allowed to send limit.

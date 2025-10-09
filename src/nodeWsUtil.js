@@ -28,6 +28,7 @@ var checkErrorMap;
     checkErrorMap["not_init"] = "not connected to server";
     checkErrorMap["ok"] = "ok";
     checkErrorMap["srvInitFailed"] = "service is not initialized properly";
+    checkErrorMap["notConnected"] = " not connected to server.";
     checkErrorMap["invalidData"] = "data type should be JSON.stringify compatible";
     checkErrorMap["rate_exceed"] = "please slow down. You have sent MORE than 2 msgs/second.";
 })(checkErrorMap = exports.checkErrorMap || (exports.checkErrorMap = {}));
@@ -70,6 +71,7 @@ var wsComWrapper = /** @class */ (function () {
             }
             if (this.connectStateFalg == true) {
                 this.wsSubject.complete();
+                this.connectStateFalg = false;
             }
         }
         catch (e) {
@@ -156,7 +158,7 @@ var wsComWrapper = /** @class */ (function () {
         try {
             if (DATA_RATE > (Date.now() - this.lastMsgSent)) {
                 status = checkErrorMap.rate_exceed;
-                console.error(status);
+                //console.error(status)
                 return status;
             }
             var str = JSON.stringify(data);
@@ -230,7 +232,7 @@ var wsComWrapper = /** @class */ (function () {
             var pDta = JSON.parse(msg);
             if (pDta && pDta.data && pDta.data.data) {
                 var mData = pDta.data.data;
-                console.info(" INPUT data : ", pDta);
+                // console.info(" INPUT data : ", pDta)
                 this.onData(mData);
             }
             else {

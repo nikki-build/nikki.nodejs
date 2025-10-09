@@ -14,10 +14,9 @@ import { nodeServiceBase } from "../src/serviceBase";
 // #  start ()             // start connection to nikki.build.
 // #  stop ()              // to disconnect  from nikki.build.                      
 
-
-
 // #  your subscriptions will have MAX messages allowed to send limit!!!.
 // #  you CAN NOT send more than 2 messages per second.
+
 
 
 export class MyDerivedClass extends nodeServiceBase {
@@ -36,7 +35,6 @@ export class MyDerivedClass extends nodeServiceBase {
 }
 
 
-
 let srvInst = new MyDerivedClass
 
 // to connect to nikki.build.
@@ -50,15 +48,7 @@ let interInst = setInterval(() => {
     srvInst.sendData({ count });
     console.info("sending data ", count)
 
-    if (count == 20) {
-        console.info("closing connection.")
-        srvInst.stop()
-        if (interInst) {
-            clearInterval(interInst)
-        }
-    }
-
-}, 6000)
+}, 3000)
 
 //  sends messages every 6 seconds . after sending 20 service will stop..
 // #  BE CARE FULL , while changin these paramters,

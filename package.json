@@ -1,6 +1,6 @@
 {
   "name": "nikki.node",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "nodejs client library for nikki.build service",
   "main": "index.js",
   "scripts": {

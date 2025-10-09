@@ -5,6 +5,7 @@ export declare enum checkErrorMap {
     not_init = "not connected to server",
     ok = "ok",
     srvInitFailed = "service is not initialized properly",
+    notConnected = " not connected to server.",
     invalidData = "data type should be JSON.stringify compatible",
     rate_exceed = "please slow down. You have sent MORE than 2 msgs/second."
 }

@@ -1,5 +1,4 @@
 "use strict";
-// E:\codelab\codeLabs\v1\cloud\webSite\src\app\shared\services\nodeApp\defs\sourceInfo.ts
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -202,8 +201,13 @@ var nodeServiceBase = /** @class */ (function (_super) {
                         stat = this.nextData(rdata);
                     }
                     else {
-                        stat = nodeWsUtil_1.checkErrorMap.srvInitFailed;
-                        console.info("not connected to server.");
+                        if (this.connectStateFalg) {
+                            stat = nodeWsUtil_1.checkErrorMap.srvInitFailed;
+                            console.info(nodeWsUtil_1.checkErrorMap.srvInitFailed);
+                        }
+                        else {
+                            console.info(nodeWsUtil_1.checkErrorMap.notConnected);
+                        }
                     }
                 }
                 catch (e) {

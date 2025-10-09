@@ -21,6 +21,7 @@ export enum checkErrorMap {
     not_init = "not connected to server",
     ok = "ok",
     srvInitFailed = "service is not initialized properly",
+    notConnected = " not connected to server.",
     invalidData = "data type should be JSON.stringify compatible",
     rate_exceed = "please slow down. You have sent MORE than 2 msgs/second.",
 }
@@ -63,6 +64,7 @@ export abstract class wsComWrapper {
             }
             if (this.connectStateFalg == true) {
                 this.wsSubject.complete()
+                this.connectStateFalg = false
             }
         }
         catch (e: any) {
@@ -154,7 +156,7 @@ export abstract class wsComWrapper {
 
             if (DATA_RATE > (Date.now() - this.lastMsgSent)) {
                 status = checkErrorMap.rate_exceed
-                console.error(status)
+                //console.error(status)
                 return status
             }
 
@@ -240,7 +242,7 @@ export abstract class wsComWrapper {
             let pDta = JSON.parse(msg)
             if (pDta && pDta.data && pDta.data.data) {
                 let mData = pDta.data.data
-                console.info(" INPUT data : ", pDta)
+                // console.info(" INPUT data : ", pDta)
                 this.onData(mData)
             }
             else {

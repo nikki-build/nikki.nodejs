@@ -6,8 +6,6 @@ export class fileUtils {
         let fileInst: string | undefined = undefined
         try {
 
-
-
             let folderContents = fs.readdirSync(folderPath);
             folderContents.forEach(file => {
                 console.info("file", file);

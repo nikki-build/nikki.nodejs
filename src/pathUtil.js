@@ -27,6 +27,7 @@ var pathUtil = /** @class */ (function () {
             srvinfo.userID = plinfo.userID;
             srvinfo.sessionID = plinfo.sessionID;
             srvinfo.srv = srv;
+            srvinfo.srv.instID = nanoid_1.nanoid();
             srvinfo.wsAddr = plinfo.wsAddr;
             srvinfo.type = common_1.wsJoinType.service;
             var appendPath = pathUtil.getServiceAppendParamSegment(srvinfo);

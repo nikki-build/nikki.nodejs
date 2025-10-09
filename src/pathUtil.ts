@@ -38,7 +38,9 @@ export class pathUtil {
             let srvinfo = new serviceJoinInfo
             srvinfo.userID = plinfo.userID
             srvinfo.sessionID = plinfo.sessionID
+
             srvinfo.srv = srv
+            srvinfo.srv.instID = nanoid()
             srvinfo.wsAddr = plinfo.wsAddr
             srvinfo.type = wsJoinType.service
 
@@ -71,7 +73,7 @@ export class pathUtil {
             let strpath = join(bPath, serviceDefFileName)
             let infoStr = readFileSync(strpath).toString()
             info = JSON.parse(infoStr)
-            if(info){
+            if (info) {
                 info.instID = nanoid()
             }
         }

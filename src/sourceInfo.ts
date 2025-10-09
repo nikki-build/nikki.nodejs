@@ -7,12 +7,14 @@ import {
 } from "./redData"
 
 export enum progLang {
-    NODEJS = "NODEJS",
-    BROWSERJS = "BROWSERJS",
-    PYTHON = "PYTHON",
-    CPP = "CPP",
-    JAVA = "JAVA",
-    KOTLIN = "KOTLIN"
+    nodejs = "nodejs",
+    js = "js",
+    python = "python",
+    cpp = "cpp",
+    java = "java",
+    kotlin = "kotlin",
+    mobile = "mobile",
+    micro = "micro"
 }
 
 export enum serviceStartType {
@@ -20,17 +22,21 @@ export enum serviceStartType {
     manual = "manual"
 }
 
+
 export class sourceInfo {
+    stackable = false 
     srvID = nanoid()
     instID = nanoid()
-    proglang: progLang = progLang.BROWSERJS
+    proglang: progLang = progLang.js
+    sysDef: boolean = false;
+    iconName: string | undefined = "";
     iDf = new dataBundle
     oDf = new dataBundle
     name = ""
     dispName = ""
     desc = ""
-    tags: string[] = []
     startType: serviceStartType = serviceStartType.manual
+    isExtern: boolean = false
     
     constructor() {
         this.iDf.ioType = ioParamsType.userDefined

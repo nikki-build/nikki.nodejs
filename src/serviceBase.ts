@@ -1,4 +1,3 @@
-// E:\codelab\codeLabs\v1\cloud\webSite\src\app\shared\services\nodeApp\defs\sourceInfo.ts
 
 import { playgroundInfo } from './common'
 import {
@@ -66,7 +65,6 @@ export abstract class nodeServiceBase extends wsComWrapper {
                     if (comStat) {
                         console.info("everything looks good... ")
                         stat = true
-
                     }
                     else {
                         console.error("failed to start.")
@@ -85,9 +83,7 @@ export abstract class nodeServiceBase extends wsComWrapper {
 
     async stop() {
         try {
-
             this.closeConnection()
-
             console.info("closed successfully.")
         }
         catch (e: any) {
@@ -126,8 +122,13 @@ export abstract class nodeServiceBase extends wsComWrapper {
                 stat = this.nextData(rdata)
             }
             else {
-                stat = checkErrorMap.srvInitFailed
-                console.info("not connected to server.")
+                if (this.connectStateFalg) {
+                    stat = checkErrorMap.srvInitFailed
+                    console.info(checkErrorMap.srvInitFailed)
+                }
+                else {
+                    console.info(checkErrorMap.notConnected)
+                }
             }
         }
         catch (e: any) {
@@ -143,7 +144,6 @@ export abstract class nodeServiceBase extends wsComWrapper {
     onError() {
 
     }
-
 
     onConnected() {
         console.info("on onConnected ")

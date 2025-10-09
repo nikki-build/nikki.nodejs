@@ -11,7 +11,7 @@ export declare abstract class nodeServiceBase extends wsComWrapper {
     start(): Promise<boolean>;
     stop(): Promise<void>;
     getNodedata(data: any): redData;
-    sendData(data: any): Promise<checkErrorMap>;
+    sendData(data: any): Promise<checkErrorMap.size_exceed | checkErrorMap.not_init | checkErrorMap.ok | checkErrorMap.srvInitFailed | checkErrorMap.invalidData | checkErrorMap.rate_exceed>;
     onData(data: any): void;
     onError(): void;
     onConnected(): void;

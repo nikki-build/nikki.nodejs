@@ -1,5 +1,5 @@
 import { nodeServiceBase } from "./src/serviceBase";
 
-export class serviceBase extends nodeServiceBase{
-    
+export class serviceBase extends nodeServiceBase {
+
 }
