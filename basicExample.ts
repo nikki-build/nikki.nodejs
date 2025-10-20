@@ -1,5 +1,5 @@
+import { serviceBase } from "nikki.node"
 
-import { nikkiServiceBase } from '../src/nikkiNodejsServiceBase'
 // #  serviceBase is the base class , you can over ride its functionalities like
 // #  
 // #  onConnected ()       // called when connection is successfully established to nikki.build
@@ -17,7 +17,7 @@ import { nikkiServiceBase } from '../src/nikkiNodejsServiceBase'
 
 
 
-export class MyDerivedClass extends nikkiServiceBase {
+export class MyDerivedClass extends serviceBase {
 
     onConnected(): void {
         console.info("we got connected : ")
