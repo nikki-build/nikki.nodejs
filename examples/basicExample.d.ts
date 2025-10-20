@@ -1,5 +1,5 @@
-import { nodeServiceBase } from "../src/serviceBase";
-export declare class MyDerivedClass extends nodeServiceBase {
+import { nikkiServiceBase } from '../src/nikkiNodejsServiceBase';
+export declare class MyDerivedClass extends nikkiServiceBase {
     onConnected(): void;
     onDisconnected(): void;
     onData(data: any): void;

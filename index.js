@@ -14,14 +14,14 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.serviceBase = void 0;
-var serviceBase_1 = require("./src/serviceBase");
+var nikkiNodejsServiceBase_1 = require("./src/nikkiNodejsServiceBase");
 var serviceBase = /** @class */ (function (_super) {
     __extends(serviceBase, _super);
     function serviceBase() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     return serviceBase;
-}(serviceBase_1.nodeServiceBase));
+}(nikkiNodejsServiceBase_1.nikkiServiceBase));
 exports.serviceBase = serviceBase;

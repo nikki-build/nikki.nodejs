@@ -14,9 +14,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.MyDerivedClass = void 0;
-var serviceBase_1 = require("../src/serviceBase");
+var nikkiNodejsServiceBase_1 = require("../src/nikkiNodejsServiceBase");
 // #  serviceBase is the base class , you can over ride its functionalities like
 // #  
 // #  onConnected ()       // called when connection is successfully established to nikki.build
@@ -45,7 +45,7 @@ var MyDerivedClass = /** @class */ (function (_super) {
         console.info("we got data : ", data);
     };
     return MyDerivedClass;
-}(serviceBase_1.nodeServiceBase));
+}(nikkiNodejsServiceBase_1.nikkiServiceBase));
 exports.MyDerivedClass = MyDerivedClass;
 var srvInst = new MyDerivedClass;
 // to connect to nikki.build.

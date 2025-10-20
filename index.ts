@@ -1,5 +1,5 @@
-import { nodeServiceBase } from "./src/serviceBase";
+import { nikkiServiceBase } from './src/nikkiNodejsServiceBase'
 
-export class serviceBase extends nodeServiceBase {
+export class serviceBase extends nikkiServiceBase {
 
 }

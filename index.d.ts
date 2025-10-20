@@ -1,3 +1,3 @@
-import { nodeServiceBase } from "./src/serviceBase";
-export declare class serviceBase extends nodeServiceBase {
+import { nikkiServiceBase } from './src/nikkiNodejsServiceBase';
+export declare class serviceBase extends nikkiServiceBase {
 }
