@@ -1,5 +1,5 @@
-import { nikkiServiceBase } from "./nikkiNodejsServiceBase";
+import { nikkiServiceBaseImpl } from './nikkiNodejsServiceBase'
 
-export class serviceBase extends nikkiServiceBase {
+export class nikkiServiceBase extends nikkiServiceBaseImpl {
 
 }

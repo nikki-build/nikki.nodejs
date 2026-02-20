@@ -1,19 +1,4 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.reconnectIntervalInMilli = exports.outDataSizeSegmentMaxLimit = exports.outDataSizeMaxLimit = exports.queryStringKey = exports.progLang = exports.deviceConnectionStatus = exports.queryStringSrvNameKey = exports.queryStringWsAddrKey = exports.queryStringTokenKey = exports.serviceTokenFile = exports.serviceDefFile = exports.serviceBasePath = exports.wsServiceConnectDef = exports.wsConnectUrlDef = exports.serviceConnectDefBase = exports.serviceTokenDef = exports.wsServiceReceiveDataMsg = exports.DataType = exports.paramsBase = exports.serviceType = exports.wsServiceSendDataMsg = exports.wsMessageBase = exports.wsMsgType = exports.wsStatusMsg = exports.wsConnectionStatusEvent = void 0;
 var wsConnectionStatusEvent;
@@ -25,13 +10,12 @@ var wsConnectionStatusEvent;
     wsConnectionStatusEvent["sendingDataWhileDisconnected"] = "sendingDataWhileDisconnected";
     wsConnectionStatusEvent["Reconnecting"] = "Reconnecting";
 })(wsConnectionStatusEvent || (exports.wsConnectionStatusEvent = wsConnectionStatusEvent = {}));
-var wsStatusMsg = /** @class */ (function () {
-    function wsStatusMsg() {
+class wsStatusMsg {
+    constructor() {
         this.type = wsConnectionStatusEvent.NotSet;
         this.data = {};
     }
-    return wsStatusMsg;
-}());
+}
 exports.wsStatusMsg = wsStatusMsg;
 var wsMsgType;
 (function (wsMsgType) {
@@ -40,36 +24,31 @@ var wsMsgType;
     wsMsgType["ServiceCommand"] = "ServiceCommand";
     wsMsgType["NotSet"] = "NotSet";
 })(wsMsgType || (exports.wsMsgType = wsMsgType = {}));
-var wsMessageBase = /** @class */ (function () {
-    function wsMessageBase() {
+class wsMessageBase {
+    constructor() {
         this.action = 'sendMessage';
         this.msgTime = Date.now();
         this.id = Math.round(Math.random() * 1E9);
         this.msgType = wsMsgType.NotSet;
         this.data = undefined;
-        this.dataType = [];
         this.servType = serviceType.external;
     }
-    return wsMessageBase;
-}());
+}
 exports.wsMessageBase = wsMessageBase;
-var wsServiceSendDataMsg = /** @class */ (function (_super) {
-    __extends(wsServiceSendDataMsg, _super);
-    function wsServiceSendDataMsg() {
-        var _this = _super.call(this) || this;
-        _this.GuID = '';
-        _this.sessionID = '';
-        _this.secrete = '';
-        _this.servID = '';
-        _this.instID = '';
-        _this.name = '';
-        _this.dispName = '';
-        _this.msgType = wsMsgType.ServiceData;
-        _this.servType = serviceType.external;
-        return _this;
+class wsServiceSendDataMsg extends wsMessageBase {
+    constructor() {
+        super();
+        this.GuID = '';
+        this.sessionID = '';
+        this.secrete = '';
+        this.servID = '';
+        this.instID = '';
+        this.name = '';
+        this.dispName = '';
+        this.msgType = wsMsgType.ServiceData;
+        this.servType = serviceType.external;
     }
-    return wsServiceSendDataMsg;
-}(wsMessageBase));
+}
 exports.wsServiceSendDataMsg = wsServiceSendDataMsg;
 var serviceType;
 (function (serviceType) {
@@ -78,15 +57,14 @@ var serviceType;
     serviceType["dash"] = "dash";
     serviceType["mobile"] = "mobile";
 })(serviceType || (exports.serviceType = serviceType = {}));
-var paramsBase = /** @class */ (function () {
-    function paramsBase() {
+class paramsBase {
+    constructor() {
         this.key = '';
         this.value = '';
         this.dataType = DataType.NotSet;
         this.range = '';
     }
-    return paramsBase;
-}());
+}
 exports.paramsBase = paramsBase;
 var DataType;
 (function (DataType) {
@@ -99,8 +77,8 @@ var DataType;
     DataType["Any"] = "any";
     DataType["NotSet"] = "NotSet";
 })(DataType || (exports.DataType = DataType = {}));
-var wsServiceReceiveDataMsg = /** @class */ (function () {
-    function wsServiceReceiveDataMsg() {
+class wsServiceReceiveDataMsg {
+    constructor() {
         this.GuID = '';
         this.servID = '';
         this.instID = '';
@@ -112,11 +90,10 @@ var wsServiceReceiveDataMsg = /** @class */ (function () {
         this.data = undefined;
         this.dataType = [];
     }
-    return wsServiceReceiveDataMsg;
-}());
+}
 exports.wsServiceReceiveDataMsg = wsServiceReceiveDataMsg;
-var serviceTokenDef = /** @class */ (function () {
-    function serviceTokenDef() {
+class serviceTokenDef {
+    constructor() {
         this.sessionID = '';
         this.secrete = '';
         this.wsAddr = '';
@@ -127,39 +104,32 @@ var serviceTokenDef = /** @class */ (function () {
         this.desc = '';
         this.name = '';
     }
-    return serviceTokenDef;
-}());
+}
 exports.serviceTokenDef = serviceTokenDef;
-var serviceConnectDefBase = /** @class */ (function () {
-    function serviceConnectDefBase() {
+class serviceConnectDefBase {
+    constructor() {
         this.GuID = '';
         this.servID = '';
         this.instID = '';
         this.name = '';
         this.dispName = '';
         this.servType = serviceType.external;
-        this.dataType = [];
     }
-    return serviceConnectDefBase;
-}());
+}
 exports.serviceConnectDefBase = serviceConnectDefBase;
-var wsConnectUrlDef = /** @class */ (function () {
-    function wsConnectUrlDef() {
+class wsConnectUrlDef {
+    constructor() {
         this.servDef = undefined;
         this.token = undefined;
     }
-    return wsConnectUrlDef;
-}());
+}
 exports.wsConnectUrlDef = wsConnectUrlDef;
-var wsServiceConnectDef = /** @class */ (function (_super) {
-    __extends(wsServiceConnectDef, _super);
-    function wsServiceConnectDef() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.wsAddr = undefined;
-        return _this;
+class wsServiceConnectDef extends wsConnectUrlDef {
+    constructor() {
+        super(...arguments);
+        this.wsAddr = undefined;
     }
-    return wsServiceConnectDef;
-}(wsConnectUrlDef));
+}
 exports.wsServiceConnectDef = wsServiceConnectDef;
 exports.serviceBasePath = 'resc/playground/services';
 exports.serviceDefFile = "serviceDef.json";

@@ -1,12 +1,12 @@
-import { wsServiceSendDataMsg } from "./serviceDef"
-import { wsConnectionStatusEvent, wsStatusMsg, outDataSizeMaxLimit, queryStringKey, wsConnectUrlDef, serviceTokenDef, serviceConnectDefBase, deviceConnectionStatus, wsServiceReceiveDataMsg, serviceTokenFile, serviceDefFile, outDataSizeSegmentMaxLimit, serviceType } from "./nikkiDef"
+import { serviceBase, wsServiceSendDataMsg } from "./serviceDef"
+import { wsConnectionStatusEvent, wsStatusMsg, outDataSizeMaxLimit, queryStringKey, wsConnectUrlDef, serviceTokenDef, deviceConnectionStatus, wsServiceReceiveDataMsg, outDataSizeSegmentMaxLimit, serviceType, serviceTokenFile, serviceDefFile } from "./nikkiDef"
 import { wsHandlerImpl } from "./nodeJsWebSocketImpl"
 
 var path = require("path")
 var fs = require("fs")
 
-export class nikkiServiceBase {
-    servDef: serviceConnectDefBase | undefined = undefined
+export class nikkiServiceBaseImpl {
+    servDef: serviceBase | undefined = undefined
     protected devKeys: serviceTokenDef | undefined = undefined
     protected connectAddr: string | undefined = undefined
     protected ws: wsHandlerImpl = new wsHandlerImpl
@@ -55,14 +55,15 @@ export class nikkiServiceBase {
         }
     }
 
-    private onWsDataMsg(data: any) {
+    private onWsDataMsg(data: wsServiceReceiveDataMsg) {
         try {
-            if (data && (data.action == 'sendMessage') && data.data) {
-                console.info("received ws client ", data)
+            console.info("receive data => ", data)
+            if (data && data.data) {
+                // console.info("received ws client ", data)
                 this.recentData = data;
 
                 this.wsConnectionStatus = deviceConnectionStatus.Active;
-                this.onData(data.data.data)
+                this.onData(data)
             }
             else {
                 console.error("received invalid data", data)
@@ -109,12 +110,12 @@ export class nikkiServiceBase {
             if (fs.existsSync(tokenPath) && fs.existsSync(servDefPath)) {
 
                 const tokenData = JSON.parse(fs.readFileSync(tokenPath, 'utf8')) as serviceTokenDef
-                const devDefData = JSON.parse(fs.readFileSync(servDefPath, 'utf8')) as serviceConnectDefBase;
+                const devDefData = JSON.parse(fs.readFileSync(servDefPath, 'utf8')) as serviceBase;
 
                 if (devDefData && tokenData) {
 
                     this.devKeys = tokenData
-                    this.servDef = devDefData
+                    this.servDef = devDefData as serviceBase
 
                     this.connectAddr = this.getConnectAddress(this.servDef, this.devKeys)
                     console.info("starting service ", this.servDef.dispName, this.connectAddr)
@@ -133,8 +134,6 @@ export class nikkiServiceBase {
         }
         return status
     }
-
-
 
     async start() {
         let optStatus = false
@@ -166,8 +165,6 @@ export class nikkiServiceBase {
         return optStatus
     }
 
-
-
     stop() {
         try {
             if (this.ws) {
@@ -185,31 +182,42 @@ export class nikkiServiceBase {
     getNodedata(data: any = {}): wsServiceSendDataMsg | undefined {
         let nData: wsServiceSendDataMsg | undefined = undefined;
         let dtStr = '';
-        if (data) {
-            try {
-                dtStr = JSON.stringify(data);
-            } catch (e: any) {
-                console.error('Exception while getNodedata:', e.message);
+        try {
+
+
+            if (data) {
+                try {
+                    dtStr = JSON.stringify(data);
+                } catch (e: any) {
+                    console.error('Exception while getNodedata:', e.message);
+                }
+                if (dtStr.length > outDataSizeSegmentMaxLimit) {
+                    console.error(`Input data size is ${dtStr.length}, sending data limit exceeded, it should be less than ${outDataSizeSegmentMaxLimit}`);
+                    return undefined;
+                }
             }
-            if (dtStr.length > outDataSizeSegmentMaxLimit) {
-                console.error(`Input data size is ${dtStr.length}, sending data limit exceeded, it should be less than ${outDataSizeSegmentMaxLimit}`);
+            else {
+                console.error('Invalid input: send some valid data');
                 return undefined;
             }
-        } else {
-            console.error('Invalid input: send some valid data');
-            return undefined;
-        }
 
-        if (this.servDef && this.devKeys && data) {
-            nData = new wsServiceSendDataMsg();
-            nData.GuID = this.servDef.GuID;
-            nData.dispName = this.servDef.dispName;
-            nData.servID = this.servDef.servID;
-            nData.name = this.servDef.name;
-            nData.instID = this.servDef.instID;
-            nData.secrete = this.devKeys.secrete;
-            nData.sessionID = this.devKeys.sessionID;
-            nData.data = data;
+            if (this.servDef && this.devKeys && data) {
+                nData = new wsServiceSendDataMsg();
+                nData.GuID = this.servDef.GuID;
+                nData.dispName = this.servDef.dispName;
+                nData.servID = this.servDef.servID;
+                nData.name = this.servDef.name;
+                nData.instID = this.servDef.instID;
+                nData.secrete = this.devKeys.secrete;
+                nData.sessionID = this.devKeys.sessionID;
+                nData.data = data;
+                nData.servType = serviceType.external
+
+                nData.dataType = this.servDef.outputs.parms
+            }
+        }
+        catch (e: any) {
+            console.error('exception while, getNodedata  ', e.message)
         }
         return nData;
     }

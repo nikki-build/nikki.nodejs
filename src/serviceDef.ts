@@ -1,4 +1,4 @@
-import { DataType, DeviceTypes, deviceConnectionStatus, progLang, serviceType } from "./nikkiDef"
+import { DataType, deviceConnectionStatus, progLang, serviceType } from "./nikkiDef"
 
 export class paramsBase {
     key = ''
@@ -31,11 +31,12 @@ export enum wsMsgType {
 
 export class wsMessageBase {
     action = 'sendMessage';
-    mesgTime = Date.now();
+    msgTime = Date.now();
     id = Math.round(Math.random() * 1E9);
-    msgType: wsMsgType = wsMsgType.NotSet;
+    msgType: wsMsgType = wsMsgType.ServiceData;
     data: any = undefined;
-    time = Date.now();
+    dataType: paramsBase[] = []
+    servType: serviceType = serviceType.external;
 }
 
 export class wsServiceSendDataMsg extends wsMessageBase {
@@ -46,11 +47,14 @@ export class wsServiceSendDataMsg extends wsMessageBase {
     instID = '';
     name = '';
     dispName = '';
+
     constructor() {
         super();
         this.msgType = wsMsgType.ServiceData;
+        this.servType = serviceType.external;
     }
 }
+
 
 export class serviceBase {
     lang = progLang.NotSet

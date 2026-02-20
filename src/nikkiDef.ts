@@ -1,25 +1,48 @@
 export enum wsConnectionStatusEvent {
-    Connected = "Connected",
-    DisConnected = "DisConnected",
-    Error = "Error",
-    NotSet = "NotSet",
-    sendingDataWhileDisconnected = "sendingDataWhileDisconnected",
-    Reconnecting = "Reconnecting"
+    Connected = 'Connected',
+    DisConnected = 'DisConnected',
+    Error = 'Error',
+    NotSet = 'NotSet',
+    sendingDataWhileDisconnected = 'sendingDataWhileDisconnected',
+    Reconnecting = 'Reconnecting',
 }
 
 export class wsStatusMsg {
-    type = wsConnectionStatusEvent.NotSet
-    data: any = {}
+    type: wsConnectionStatusEvent = wsConnectionStatusEvent.NotSet;
+    data: any = {};
 }
 
 export enum wsMsgType {
-    DashboardStatus = "DashboardStatus",
-    ServiceData = "ServiceData",
-    OperationStatus = "OperationStatus",
-    Connection = "Connection",
-    NotSet = "NotSet"
+    DashboardStatus = 'DashboardStatus',
+    ServiceData = 'ServiceData',
+    ServiceCommand = 'ServiceCommand',
+    NotSet = 'NotSet',
 }
 
+export class wsMessageBase {
+    action = 'sendMessage';
+    msgTime = Date.now();
+    id = Math.round(Math.random() * 1E9);
+    msgType: wsMsgType = wsMsgType.NotSet;
+    data: any = undefined;
+    servType: serviceType = serviceType.external;
+
+}
+
+export class wsServiceSendDataMsg extends wsMessageBase {
+    GuID = '';
+    sessionID = '';
+    secrete = '';
+    servID = '';
+    instID = '';
+    name = '';
+    dispName = '';
+    constructor() {
+        super();
+        this.msgType = wsMsgType.ServiceData;
+        this.servType = serviceType.external;
+    }
+}
 
 export enum serviceType {
     system = 'system',
@@ -28,15 +51,46 @@ export enum serviceType {
     mobile = "mobile"
 }
 
-export class wsMessageBase {
-    action = "sendMessage"
-    token = ''
-    eps = actionPoints.NotSet
-    mesgTime = Date.now()
+
+export class paramsBase {
+    key = ''
+    value = ''
+    dataType = DataType.NotSet
+    range = ''
+}
+
+export enum DataType {
+    String = "string",
+    Int = "int",
+    Float = "float",
+    Bool = "bool",
+    Array = "array",
+    Json = "json",
+    Any = 'any',
+    NotSet = "NotSet"
+}
+
+export interface Sender {
+    GuID: string;
+    servID: string;
+    instID: string;
+    name: string;
+    dispName: string;
+    servType: serviceType;
+}
+
+export class wsServiceReceiveDataMsg implements Sender {
+    GuID = ''
+    servID = ''
+    instID = ''
+    name = ''
+    dispName = ''
+    servType = serviceType.system
+
     id = Math.round(Math.random() * 1E9)
-    msgType = wsMsgType.NotSet
-    data: any = undefined
-    servicetype = serviceType.system
+    msgTime = Date.now();
+    data: any = undefined;
+    dataType: paramsBase[] = []
 }
 
 export class serviceTokenDef {
@@ -57,6 +111,7 @@ export class serviceConnectDefBase {
     instID = '';
     name = '';
     dispName = '';
+    servType: serviceType = serviceType.external;
 }
 
 export class wsConnectUrlDef {
@@ -64,100 +119,46 @@ export class wsConnectUrlDef {
     token: serviceTokenDef | undefined = undefined;
 }
 
-export class wsDeviceSleepDef {
-    devID = ""
-    duration = 5 // minutes
-    startTime = Date.now()
-    devName = ''
-    devDispName = ''
-    
+export class wsServiceConnectDef extends wsConnectUrlDef {
+    wsAddr: string | undefined = undefined;
 }
 
-export class wsDeviceKeys {
-    token = ''
-    wsAddr = ""
-    isPro = false
-    rateLimit = 2
-}
+export const serviceBasePath = 'resc/playground/services';
 
+export var serviceDefFile = "serviceDef.json"
+export var serviceTokenFile = "serviceToken.json"
 
-export enum actionPoints {
-    AddDash = "AddDash",
-    RemoveDash = "RemoveDash",
-    sendMessage = "sendMessage",
-    GoSleep = "GoSleep",
-
-    AddDevice = "AddDevice",
-    RemoveDevice = "RemoveDevice",
-    NotSet = 'NotSet'
-}
-
+export var queryStringTokenKey = 'token'
+export var queryStringWsAddrKey = 'wsAddr'
+export var queryStringSrvNameKey = 'name'
 
 export enum DataType {
-    int = "int",
-    string = "string",
-    intArr = "intArr",
-    stringArr = "stringArr",
-    object = "object",
-    notSet = "notSet"
+    int = 'int',
+    string = 'string',
+    intArr = 'intArr',
+    stringArr = 'stringArr',
+    object = 'object',
+    notSet = 'notSet',
 }
 
 export enum deviceConnectionStatus {
     Active = 'Active',
     Inactive = 'Inactive',
+    NotSet = 'NotSet'
+}
+
+export enum progLang {
+    Python = 'Python',
+    NodeJS = 'NodeJS',
+    JavaScript = 'JavaScript',
+    TypeScript = 'TypeScript',
+    CPP = 'CPP',
+    Kotlin = 'Kotlin',
+    Java = 'Java',
     NotSet = 'NotSet',
 }
 
-export class wsServiceReceiveDataMsg {
-    sender = {
-        GuID: '',
-        servID: '',
-        instID: '',
-        name: '',
-        dispName: ''
-    };
-    time = Date.now();
-    data: any = undefined;
-}
-
-
-
-export enum progLang {
-    Python = "Python",
-    NodeJS = "NodeJS",
-    JavaScript = "JavaScript",
-    TypeScript = "TypeScript",
-    CPP = "CPP",
-    Kotlin = "Kotlin",
-    Java = "Java",
-    NotSet = "NotSet"
-}
-
-export enum DeviceTypes {
-    Laptop = "Laptop",
-    Browser = "Browser",
-    Mobile = "Mobile",
-    Microcontroller = "Microcontroller",
-    NotSet = "NotSet"
-}
-
-
-
-
-
-export var queryStringKey = 'token'
-
-export var  outDataSizeMaxLimit = 3000
-export var  outDataSizeSegmentMaxLimit = 500
-
-export var  reconnectIntervalInMilli = 6000
-
-
-
-
-
-
-export var serviceDefFile = "serviceDef.json"
-export var serviceTokenFile = "serviceToken.json"
-export var serviceDefBaseFile = "serviceDef"
-export var serviceTokenBaseFile = "serviceToken"
+export const queryStringKey = 'token';
+export const outDataSizeMaxLimit = 3000;
+export const outDataSizeSegmentMaxLimit = 500;
+export const reconnectIntervalInMilli = 6000000;

@@ -1,0 +1,31 @@
+import { serviceBase, wsServiceSendDataMsg } from "./serviceDef";
+import { serviceTokenDef, deviceConnectionStatus, wsServiceReceiveDataMsg, serviceType } from "./nikkiDef";
+import { wsHandlerImpl } from "./nodeJsWebSocketImpl";
+export declare class nikkiServiceBaseImpl {
+    servDef: serviceBase | undefined;
+    protected devKeys: serviceTokenDef | undefined;
+    protected connectAddr: string | undefined;
+    protected ws: wsHandlerImpl;
+    protected lastMsgTime: number;
+    protected wsStatusSubscription: any;
+    protected wsDataSubscription: any;
+    protected isSleepingFlag: boolean;
+    protected devServiceType: serviceType;
+    wsConnectionStatus: deviceConnectionStatus;
+    protected recentData: wsServiceReceiveDataMsg | undefined;
+    constructor();
+    private onWsStatusMsg;
+    private onWsDataMsg;
+    getRecentMsg(): wsServiceReceiveDataMsg | undefined;
+    protected getConnectAddress(serv: any, token: serviceTokenDef): string | undefined;
+    protected init(): Promise<boolean>;
+    start(): Promise<boolean>;
+    stop(): void;
+    getNodedata(data?: any): wsServiceSendDataMsg | undefined;
+    sendData(message: any): boolean;
+    isConnected(): void;
+    onConnect(): void;
+    onDisconnect(): void;
+    onError(error: any): void;
+    onData(data: any): void;
+}

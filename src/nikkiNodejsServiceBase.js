@@ -84,11 +84,11 @@ var nikkiServiceBase = /** @class */ (function () {
     };
     nikkiServiceBase.prototype.onWsDataMsg = function (data) {
         try {
-            if (data && (data.action == 'sendMessage') && data.data) {
+            if (data && data.data) {
                 console.info("received ws client ", data);
                 this.recentData = data;
                 this.wsConnectionStatus = nikkiDef_1.deviceConnectionStatus.Active;
-                this.onData(data.data.data);
+                this.onData(data.data);
             }
             else {
                 console.error("received invalid data", data);
@@ -209,32 +209,39 @@ var nikkiServiceBase = /** @class */ (function () {
         if (data === void 0) { data = {}; }
         var nData = undefined;
         var dtStr = '';
-        if (data) {
-            try {
-                dtStr = JSON.stringify(data);
+        try {
+            if (data) {
+                try {
+                    dtStr = JSON.stringify(data);
+                }
+                catch (e) {
+                    console.error('Exception while getNodedata:', e.message);
+                }
+                if (dtStr.length > nikkiDef_1.outDataSizeSegmentMaxLimit) {
+                    console.error("Input data size is ".concat(dtStr.length, ", sending data limit exceeded, it should be less than ").concat(nikkiDef_1.outDataSizeSegmentMaxLimit));
+                    return undefined;
+                }
             }
-            catch (e) {
-                console.error('Exception while getNodedata:', e.message);
-            }
-            if (dtStr.length > nikkiDef_1.outDataSizeSegmentMaxLimit) {
-                console.error("Input data size is ".concat(dtStr.length, ", sending data limit exceeded, it should be less than ").concat(nikkiDef_1.outDataSizeSegmentMaxLimit));
+            else {
+                console.error('Invalid input: send some valid data');
                 return undefined;
             }
+            if (this.servDef && this.devKeys && data) {
+                nData = new serviceDef_1.wsServiceSendDataMsg();
+                nData.GuID = this.servDef.GuID;
+                nData.dispName = this.servDef.dispName;
+                nData.servID = this.servDef.servID;
+                nData.name = this.servDef.name;
+                nData.instID = this.servDef.instID;
+                nData.secrete = this.devKeys.secrete;
+                nData.sessionID = this.devKeys.sessionID;
+                nData.data = data;
+                nData.servType = nikkiDef_1.serviceType.external;
+                nData.dataType = this.servDef.outputs.parms;
+            }
         }
-        else {
-            console.error('Invalid input: send some valid data');
-            return undefined;
-        }
-        if (this.servDef && this.devKeys && data) {
-            nData = new serviceDef_1.wsServiceSendDataMsg();
-            nData.GuID = this.servDef.GuID;
-            nData.dispName = this.servDef.dispName;
-            nData.servID = this.servDef.servID;
-            nData.name = this.servDef.name;
-            nData.instID = this.servDef.instID;
-            nData.secrete = this.devKeys.secrete;
-            nData.sessionID = this.devKeys.sessionID;
-            nData.data = data;
+        catch (e) {
+            console.error('exception while, getNodedata  ', e.message);
         }
         return nData;
     };

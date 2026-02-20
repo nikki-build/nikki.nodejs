@@ -1,10 +1,17 @@
 {
   "name": "nikki.node",
-  "version": "2.0.2",
-  "description": "nodejs client library for nikki.build service",
-  "main": "index.js",
+  "version": "2.1.8",
+  "description": "Node.js client library for nikki.build service",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "clean": "rimraf dist",
+    "prepublishOnly": "npm run build",
+    "test": "echo \"No tests specified\""
   },
   "repository": {
     "type": "git",
@@ -15,6 +22,14 @@
   "bugs": {
     "url": "https://github.com/nikki-build/nikki.nodejs/issues"
   },
+  "homepage": "https://github.com/nikki-build/nikki.nodejs#readme",
+  "keywords": [
+    "nikki",
+    "nikki-build",
+    "nodejs",
+    "client",
+    "sdk"
+  ],
   "dependencies": {
     "rxjs": "^7.5.2",
     "ws": "^8.4.2"
@@ -22,12 +37,12 @@
   "devDependencies": {
     "@types/node": "^20.11.19",
     "@types/ws": "^8.5.10",
+    "rimraf": "^5.0.5",
     "typescript": "^5.4.5"
   },
-  "contributors": [
-    {
-      "name": "nikkibuild edTech Pvt Ltd."
-    }
-  ],
-  "homepage": "https://github.com/nikki-build/nikki.nodejs#readme"
+  "engines": {
+    "node": ">=16"
+  },
+  "sideEffects": false
+
 }
