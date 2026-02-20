@@ -8,5 +8,5 @@
 !examples/
 !examples/**
 
-# Keep the gitignore itself
+# Keep the gitignore itself 
 !.gitignore
