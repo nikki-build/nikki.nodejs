@@ -1,7 +1,7 @@
 nikki.node
 ==========
 
-**Official Node.js client library for the nikki.build service.**
+**Official Nodejs client library for the nikki.build service.**
 
 👉 **Website:** [https://nikki.build](https://nikki.build)
 
@@ -9,7 +9,7 @@ nikki.node
 
 ## Overview
 -----------
-`nikki.node` allows you to seamlessly connect your Node.js services to the **nikki.build** platform. Designed for reliability and speed, this library provides a robust base for real-time data streaming and node-to-node communication.
+`nikki.node` allows you to seamlessly connect your Nodejs services to the **nikki.build** platform. Designed for reliability and speed, this library provides a robust base for real-time data streaming and node-to-node communication.
 
 * **Reliable Connectivity:** Built-in connection management.
 * **JSON Native:** Easy-to-use JSON data handling.
@@ -18,7 +18,7 @@ nikki.node
 * **TypeScript Ready:** Full type definitions included.
 * **Extensible:** Built around a base class for custom logic.
 
-The library is built with TypeScript and supports Node.js >=16.
+The library is built with TypeScript and supports Nodejs >=16.
 
 ---
 
@@ -41,25 +41,40 @@ Extend the `nikkiServiceBase` class to handle your custom logic.
 import { nikkiServiceBase } from "nikki.node";
 
 export class MyService extends nikkiServiceBase {
-    onConnected(): void {
+    onConnect(): void {
         console.info("Connected to nikki.build");
     }
-
-    onDisconnected(): void {
+    onDisconnect(): void {
         console.info("Disconnected from nikki.build");
     }
-
     onData(data: any): void {
         console.info("Received data:", data);
     }
-
     onError(errMsg: string): void {
         console.error("Error:", errMsg);
     }
 }
 ```
 
+## 📁 Configuration Files (Required)
+
+Make sure the required configuration files are available at the **root of your project**.
+The library will automatically attempt to load these files during initialization.
+
+### ✅ Required Files
+
+Place the following files at the root path:
+- /serviceDef.json
+- /serviceToken.json
+
+> These files are **mandatory** for establishing a connection.
+> The library expects them at the **root level** (same level as your HTML or entry file).
+> If they are missing or invalid:
+> - Connection will fail
+
+
 ### 2\. Start the Connection
+
 
 Create an instance and start the connection:
 
@@ -100,8 +115,8 @@ Override these methods in your service class:
 
 | Method | Description |
 |--------|------------|
-| `onConnected()` | Called when the connection is successfully established to nikki.build |
-| `onDisconnected()` | Called when the connection is closed or lost |
+| `onConnect()` | Called when the connection is successfully established to nikki.build |
+| `onDisconnect()` | Called when the connection is closed or lost |
 | `onError(errMsg)` | Called whenever an error occurs |
 | `onData(jsonData)` | Called when data is received from another connected node |
 
@@ -145,7 +160,7 @@ Example Use Cases
 Requirements
 ------------
 
-*   **Node.js:** >= 16
+*   **Node.s:** >= 16
     
 *   **Dependencies:** rxjs, ws
     

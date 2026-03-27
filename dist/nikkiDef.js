@@ -9,6 +9,7 @@ var wsConnectionStatusEvent;
     wsConnectionStatusEvent["NotSet"] = "NotSet";
     wsConnectionStatusEvent["sendingDataWhileDisconnected"] = "sendingDataWhileDisconnected";
     wsConnectionStatusEvent["Reconnecting"] = "Reconnecting";
+    wsConnectionStatusEvent["sentMsgSuccess"] = "sentMsgSuccess";
 })(wsConnectionStatusEvent || (exports.wsConnectionStatusEvent = wsConnectionStatusEvent = {}));
 class wsStatusMsg {
     constructor() {

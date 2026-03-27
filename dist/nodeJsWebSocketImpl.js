@@ -29,6 +29,14 @@ class wsHandlerImpl {
         }
         return stat;
     }
+    getBufferedAmount() {
+        try {
+            return this.wsHandl?.bufferedAmount ?? 0;
+        }
+        catch {
+            return 0;
+        }
+    }
     getWsStatusSubject() {
         return this.connectionStatSubject;
     }
@@ -137,7 +145,22 @@ class wsHandlerImpl {
     sendMessage(msg) {
         try {
             if (this.wsHandl && this.wsHandl.readyState === ws_1.WebSocket.OPEN) {
-                this.wsHandl.send(JSON.stringify(msg));
+                this.wsHandl.send(JSON.stringify(msg), (err) => {
+                    if (err) {
+                        console.error("❌ send error:", err.message);
+                        // this.onSendError?.(err, msg);
+                        let wstat = new nikkiDef_1.wsStatusMsg;
+                        wstat.type = nikkiDef_1.wsConnectionStatusEvent.Error;
+                        wstat.data = err.message;
+                        this.connectionStatSubject.next(wstat);
+                    }
+                    else {
+                        let wstat = new nikkiDef_1.wsStatusMsg;
+                        wstat.type = nikkiDef_1.wsConnectionStatusEvent.sentMsgSuccess;
+                        wstat.data = undefined;
+                        this.connectionStatSubject.next(wstat);
+                    }
+                });
             }
             else {
                 console.error('trying to send message!, WebSocket is not connected.');

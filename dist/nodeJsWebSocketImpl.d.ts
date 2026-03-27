@@ -10,6 +10,7 @@ export declare class wsHandlerImpl {
     protected reconnectTimeout: any;
     constructor();
     getConnectionStatus(): boolean;
+    getBufferedAmount(): number;
     getWsStatusSubject(): Subject<wsStatusMsg>;
     getWsDataSubject(): Subject<any>;
     protected onWsMessage(msg: any): void;

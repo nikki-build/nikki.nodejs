@@ -13,6 +13,13 @@ export declare class nikkiServiceBaseImpl {
     protected devServiceType: serviceType;
     wsConnectionStatus: deviceConnectionStatus;
     protected recentData: wsServiceReceiveDataMsg | undefined;
+    private sendQueue;
+    private sentTimestamps;
+    private isFlushing;
+    private readonly MAX_QUEUE_SIZE;
+    private readonly MAX_BUFFERED_AMOUNT;
+    private readonly MAX_MSG_SIZE;
+    private readonly RATE_WINDOW_MS;
     constructor();
     private onWsStatusMsg;
     private onWsDataMsg;
@@ -23,6 +30,11 @@ export declare class nikkiServiceBaseImpl {
     stop(): void;
     getNodedata(data?: any): wsServiceSendDataMsg | undefined;
     sendData(message: any): boolean;
+    private flushQueue;
+    protected onBackpressure?(info: number): void;
+    protected onRateLimit?(): void;
+    protected onSendSuccess?(msg: string): void;
+    protected onSendError?(err: any, msg?: string): void;
     isConnected(): void;
     onConnect(): void;
     onDisconnect(): void;

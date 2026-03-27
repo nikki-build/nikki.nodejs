@@ -18,6 +18,13 @@ class nikkiServiceBaseImpl {
         this.isSleepingFlag = false;
         this.devServiceType = nikkiDef_1.serviceType.external;
         this.wsConnectionStatus = nikkiDef_1.deviceConnectionStatus.Inactive;
+        this.sendQueue = [];
+        this.sentTimestamps = [];
+        this.isFlushing = false;
+        this.MAX_QUEUE_SIZE = 500;
+        this.MAX_BUFFERED_AMOUNT = 2 * 1024 * 1024; // 2MB
+        this.MAX_MSG_SIZE = 1024 * 1024; // 1MB
+        this.RATE_WINDOW_MS = 1000;
         this.wsDataSubscription = this.ws.getWsDataSubject().subscribe({ next: this.onWsDataMsg.bind(this) });
         this.wsStatusSubscription = this.ws.getWsStatusSubject().subscribe({ next: this.onWsStatusMsg.bind(this) });
     }
@@ -182,6 +189,7 @@ class nikkiServiceBaseImpl {
                 nData.sessionID = this.devKeys.sessionID;
                 nData.data = data;
                 nData.servType = nikkiDef_1.serviceType.external;
+                nData.action = 'sendMessage';
                 nData.dataType = this.servDef.outputs.parms;
             }
         }
@@ -191,40 +199,92 @@ class nikkiServiceBaseImpl {
         return nData;
     }
     sendData(message) {
-        let status = false;
+        if (!message) {
+            console.error("❌ Invalid message");
+            return false;
+        }
+        if (!this.ws || !this.devKeys || !this.servDef) {
+            console.error("❌ Not initialized");
+            return false;
+        }
+        if (!this.ws.getConnectionStatus?.()) {
+            console.error("❌ WS not connected");
+            return false;
+        }
+        let strMsg;
         try {
-            if (!message) {
-                console.error('Trying to send invalid data.');
+            const srvData = this.getNodedata(message);
+            if (!srvData)
                 return false;
-            }
-            if (this.ws && this.devKeys && this.ws.getConnectionStatus() && this.servDef) {
-                const timeDiff = Date.now() - this.lastMsgTime;
-                if (timeDiff > (this.devKeys.rateLimit * 1000)) {
-                    const srvData = this.getNodedata(message);
-                    if (srvData) {
-                        const strMsg = JSON.stringify(srvData);
-                        if (nikkiDef_1.outDataSizeMaxLimit > strMsg.length) {
-                            this.ws.sendMessage(strMsg);
-                            this.lastMsgTime = Date.now();
-                            status = true;
-                        }
-                        else {
-                            console.error(`Exceeded outgoing data size, it should be less than ${nikkiDef_1.outDataSizeMaxLimit} bytes`);
-                        }
-                    }
-                }
-                else {
-                    console.error(`Exceeding sending rate limits: allowed ${this.devKeys.rateLimit} msgs / second`);
-                }
-            }
-            else {
-                console.error('WebSocket is not connected.');
-            }
+            strMsg = JSON.stringify(srvData);
         }
-        catch (e) {
-            console.error('Exception while sendMessage:', e.message);
+        catch (err) {
+            console.error("❌ Data prep failed:", err.message);
+            return false;
         }
-        return status;
+        // ✅ correct byte size
+        const byteSize = Buffer.byteLength(strMsg, "utf8");
+        if (byteSize > this.MAX_MSG_SIZE) {
+            console.error(`❌ Message too large: ${byteSize}`);
+            return false;
+        }
+        // 🚦 queue protection
+        if (this.sendQueue.length >= this.MAX_QUEUE_SIZE) {
+            console.warn("⚠️ Queue full. Dropping message.");
+            this.onBackpressure?.(this.sendQueue.length);
+            return false;
+        }
+        // ✅ enqueue
+        this.sendQueue.push(strMsg);
+        // 🔁 trigger flush
+        this.flushQueue();
+        return true;
+    }
+    // ==============================
+    // SAFE BUFFER CHECK
+    // ==============================
+    flushQueue() {
+        if (this.isFlushing)
+            return;
+        this.isFlushing = true;
+        const process = () => {
+            try {
+                const now = Date.now();
+                const RATE_LIMIT = Number(this.devKeys?.rateLimit) || 1;
+                // 🧹 clean timestamps
+                this.sentTimestamps = this.sentTimestamps.filter(ts => now - ts < this.RATE_WINDOW_MS);
+                // 🚦 rate limit
+                if (this.sentTimestamps.length >= RATE_LIMIT) {
+                    this.onRateLimit?.();
+                    setTimeout(process, 10);
+                    return;
+                }
+                // 🚦 empty queue
+                if (this.sendQueue.length === 0) {
+                    this.isFlushing = false;
+                    return;
+                }
+                // 🚦 buffer check (Node.js ws)
+                const buffered = this.ws.getBufferedAmount() || 0;
+                if (buffered > this.MAX_BUFFERED_AMOUNT) {
+                    console.warn(`⚠️ Backpressure: ${buffered}`);
+                    this.onBackpressure?.(buffered);
+                    // wait for drain
+                    setTimeout(process, 50);
+                    return;
+                }
+                // ✅ send next
+                const msg = this.sendQueue.shift();
+                this.ws.sendMessage(msg);
+                // continue loop
+                setImmediate(process);
+            }
+            catch (err) {
+                console.error("❌ flushQueue crash:", err);
+                this.isFlushing = false;
+            }
+        };
+        process();
     }
     isConnected() {
         this.ws.getConnectionStatus();

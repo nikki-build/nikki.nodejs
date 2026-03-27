@@ -4,7 +4,8 @@ export declare enum wsConnectionStatusEvent {
     Error = "Error",
     NotSet = "NotSet",
     sendingDataWhileDisconnected = "sendingDataWhileDisconnected",
-    Reconnecting = "Reconnecting"
+    Reconnecting = "Reconnecting",
+    sentMsgSuccess = "sentMsgSuccess"
 }
 export declare class wsStatusMsg {
     type: wsConnectionStatusEvent;
