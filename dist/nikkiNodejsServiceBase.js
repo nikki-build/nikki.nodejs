@@ -95,7 +95,7 @@ class nikkiServiceBaseImpl {
             let bPath = process.cwd();
             const tokenPath = path.join(bPath, nikkiDef_1.serviceTokenFile);
             const servDefPath = path.join(bPath, nikkiDef_1.serviceDefFile);
-            console.info('token path ', tokenPath, bPath);
+            // console.info('token path ', tokenPath, bPath)
             if (fs.existsSync(tokenPath) && fs.existsSync(servDefPath)) {
                 const tokenData = JSON.parse(fs.readFileSync(tokenPath, 'utf8'));
                 const devDefData = JSON.parse(fs.readFileSync(servDefPath, 'utf8'));
@@ -103,7 +103,7 @@ class nikkiServiceBaseImpl {
                     this.devKeys = tokenData;
                     this.servDef = devDefData;
                     this.connectAddr = this.getConnectAddress(this.servDef, this.devKeys);
-                    console.info("starting service ", this.servDef.dispName, this.connectAddr);
+                    console.info("starting service ", this.servDef.dispName);
                     status = true;
                 }
                 else {
